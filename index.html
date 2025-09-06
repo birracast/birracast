@@ -133,7 +133,9 @@
       const container = document.getElementById('products-container');
       const loadingDiv = document.getElementById('loading');
 
-      if (!googleSheetUrl || googleSheetUrl === 'https://api.allorigins.win/raw?url=https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv') {
+      // Esta verificação procura pelo texto original do placeholder.
+      // Se o link estiver vazio ou for o placeholder, ele mostra o erro.
+      if (!googleSheetUrl || googleSheetUrl === 'COLE_SEU_LINK_CSV_AQUI') {
           container.innerHTML = `<div id="error"><strong>Erro:</strong> Por favor, configure o link da sua planilha do Google Sheets no arquivo index.html.</div>`;
           return;
       }
@@ -146,10 +148,10 @@
         const csvText = await response.text();
         const products = parseCSV(csvText);
 
-        loadingDiv.style.display = 'none'; // Esconde a mensagem de "carregando"
+        loadingDiv.style.display = 'none';
         
         products.forEach(product => {
-          if (product.Produto && product.VideoInstagram) { // Só exibe se tiver nome e vídeo
+          if (product.Produto && product.VideoInstagram) {
               const productCard = createProductCard(product);
               container.innerHTML += productCard;
           }
@@ -180,7 +182,6 @@
 
     function createProductCard(product) {
       const instagramUrl = product.VideoInstagram;
-      // Extrai o código do vídeo do link do Instagram
       const instaShortcode = instagramUrl.split('/p/')[1]?.split('/')[0] || instagramUrl.split('/reel/')[1]?.split('/')[0];
       const embedUrl = `https://www.instagram.com/p/${instaShortcode}/embed`;
       
@@ -216,6 +217,7 @@
   </script>
 </body>
 </html>
+
 
 
 
