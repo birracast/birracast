@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meus Achadinhos</title>
   <style>
-    /* Estilos Gerais */
     :root {
       --primary-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --background-color: #f4f4f9;
@@ -39,14 +38,12 @@
       max-width: 1200px;
     }
     #loading, #error {
-        text-align: center;
-        font-size: 1.2rem;
-        color: #777;
-        padding: 40px;
-        width: 100%;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #777;
+      padding: 40px;
+      width: 100%;
     }
-
-    /* Estilos do Card de Produto */
     .produto {
       background: var(--card-background);
       border-radius: 16px;
@@ -57,8 +54,8 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .produto:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
     }
     .produto h2 {
       margin-top: 0;
@@ -66,10 +63,8 @@
       font-size: 1.25rem;
       color: var(--title-color);
       text-align: center;
-      min-height: 50px; /* Garante alinhamento entre cards */
+      min-height: 50px;
     }
-
-    /* Estilos do Vídeo */
     .video {
       text-align: center;
       overflow: hidden;
@@ -83,14 +78,12 @@
       border: none;
       border-radius: 12px;
     }
-
-    /* Estilos dos Botões com Ícones */
     .botoes {
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 25px;
-      margin-top: auto; /* Empurra os botões para o final do card */
+      margin-top: auto;
       padding-top: 15px;
     }
     .botoes a {
@@ -121,10 +114,10 @@
 
   <script>
     // --- CONFIGURAÇÃO ---
-    // COLE AQUI O LINK DA SUA PLANILHA PUBLICADA COMO CSV
-    const googleSheetUrl = 'https://api.allorigins.win/raw?url=https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv';
+    // Coloque aqui o link da sua planilha publicada como CSV
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv";
+    const googleSheetUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(sheetUrl);
 
-    // --- LÓGICA DO SITE ---
     document.addEventListener('DOMContentLoaded', () => {
       loadProducts();
     });
@@ -133,27 +126,25 @@
       const container = document.getElementById('products-container');
       const loadingDiv = document.getElementById('loading');
 
-      // Esta verificação procura pelo texto original do placeholder.
-      // Se o link estiver vazio ou for o placeholder, ele mostra o erro.
-      if (!googleSheetUrl || googleSheetUrl === 'COLE_SEU_LINK_CSV_AQUI') {
-          container.innerHTML = `<div id="error"><strong>Erro:</strong> Por favor, configure o link da sua planilha do Google Sheets no arquivo index.html.</div>`;
-          return;
+      if (!googleSheetUrl) {
+        container.innerHTML = `<div id="error"><strong>Erro:</strong> Por favor, configure o link da sua planilha do Google Sheets no arquivo index.html.</div>`;
+        return;
       }
 
       try {
         const response = await fetch(googleSheetUrl);
         if (!response.ok) {
-            throw new Error(`Erro ao buscar dados: ${response.statusText}`);
+          throw new Error(`Erro ao buscar dados: ${response.statusText}`);
         }
         const csvText = await response.text();
         const products = parseCSV(csvText);
 
         loadingDiv.style.display = 'none';
-        
+
         products.forEach(product => {
           if (product.Produto && product.VideoInstagram) {
-              const productCard = createProductCard(product);
-              container.innerHTML += productCard;
+            const productCard = createProductCard(product);
+            container.innerHTML += productCard;
           }
         });
 
@@ -163,28 +154,28 @@
         container.innerHTML = `<div id="error"><strong>Oops!</strong> Não foi possível carregar os produtos. Verifique se o link da planilha está correto e publicado como CSV.</div>`;
       }
     }
-    
+
     function parseCSV(text) {
-        const lines = text.split(/\r\n|\n/);
-        const headers = lines[0].split(',');
-        const result = [];
-        for (let i = 1; i < lines.length; i++) {
-            if (!lines[i]) continue;
-            const obj = {};
-            const currentline = lines[i].split(',');
-            for (let j = 0; j < headers.length; j++) {
-                obj[headers[j]] = currentline[j];
-            }
-            result.push(obj);
+      const lines = text.split(/\r\n|\n/);
+      const headers = lines[0].split(/,|;/);
+      const result = [];
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i]) continue;
+        const obj = {};
+        const currentline = lines[i].split(/,|;/);
+        for (let j = 0; j < headers.length; j++) {
+          obj[headers[j]] = currentline[j];
         }
-        return result;
+        result.push(obj);
+      }
+      return result;
     }
 
     function createProductCard(product) {
-      const instagramUrl = product.VideoInstagram;
-      const instaShortcode = instagramUrl.split('/p/')[1]?.split('/')[0] || instagramUrl.split('/reel/')[1]?.split('/')[0];
+      const cleanUrl = product.VideoInstagram.split("?")[0];
+      const instaShortcode = cleanUrl.split("/p/")[1] || cleanUrl.split("/reel/")[1];
       const embedUrl = `https://www.instagram.com/p/${instaShortcode}/embed`;
-      
+
       const amazonLink = product.LinkAmazon ? `
         <a href="${product.LinkAmazon}" target="_blank" title="Comprar na Amazon">
           <img src="https://i.imgur.com/n4G0b35.png" alt="Ícone da Amazon">
@@ -194,7 +185,7 @@
         <a href="${product.LinkMercadoLivre}" target="_blank" title="Comprar no Mercado Livre">
           <img src="https://i.imgur.com/vHqWr3R.png" alt="Ícone do Mercado Livre">
         </a>` : '';
-        
+
       const shopeeLink = product.LinkShopee ? `
         <a href="${product.LinkShopee}" target="_blank" title="Comprar na Shopee">
           <img src="https://i.imgur.com/33a3a41.png" alt="Ícone da Shopee">
@@ -217,9 +208,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
