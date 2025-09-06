@@ -133,7 +133,7 @@
       const container = document.getElementById('products-container');
       const loadingDiv = document.getElementById('loading');
 
-      if (!googleSheetUrl || googleSheetUrl === 'COLE_SEU_LINK_CSV_AQUI') {
+      if (!googleSheetUrl || googleSheetUrl === 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv') {
           container.innerHTML = `<div id="error"><strong>Erro:</strong> Por favor, configure o link da sua planilha do Google Sheets no arquivo index.html.</div>`;
           return;
       }
@@ -216,4 +216,5 @@
   </script>
 </body>
 </html>
+
 
