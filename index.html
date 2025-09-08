@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -40,7 +40,7 @@
       transition: transform .2s, box-shadow .2s;
     }
     .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
-    .links img { width: 60%; height: 60%; object-fit: contain; }
+    .links img { max-width: 70%; max-height: 70%; object-fit: contain; }
     .hidden { display:none; }
   </style>
 </head>
@@ -73,7 +73,6 @@
 
     const get = (row, keys) => {
       for (const k of keys) {
-        // tolera espaços extras no cabeçalho
         const foundKey = Object.keys(row).find(h => h.trim() === k);
         if (foundKey && String(row[foundKey]).trim()) return String(row[foundKey]).trim();
       }
@@ -83,7 +82,6 @@
     const normalizeIg = (url) => {
       if (!url) return "";
       let u = url.trim();
-      // garante o formato permalink com barra final
       if (!u.startsWith("http")) u = "https://" + u.replace(/^\/\//,"");
       if (!u.endsWith("/")) u += "/";
       return u;
@@ -107,18 +105,17 @@
 
         const rows = results.data
           .map(r => {
-            // remove chaves com espaços no nome
             const clean = {};
             Object.keys(r).forEach(k => clean[k.trim()] = r[k]);
             return clean;
           })
-          .filter(r => Object.values(r).some(v => String(v).trim())); // ignora linha totalmente vazia
+          .filter(r => Object.values(r).some(v => String(v).trim()));
 
         let rendered = 0;
 
         rows.forEach(item => {
           const nome = get(item, COLS.produto);
-          if (!nome) return; // sem nome, não renderiza
+          if (!nome) return;
 
           const ig   = normalizeIg(get(item, COLS.instagram));
           const az   = get(item, COLS.amazon);
@@ -128,7 +125,6 @@
           const card = document.createElement("div");
           card.className = "produto";
 
-          // monta o bloco do Instagram somente se houver link
           const igBlock = ig ? `<blockquote class="instagram-media" data-instgrm-permalink="${ig}" data-instgrm-version="14"></blockquote>` : "";
 
           card.innerHTML = `
@@ -149,7 +145,6 @@
           status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha (Produto, VideoInstagram, LinkAmazon, LinkMercadoLivre/LinkMercadoLivr, LinkShopee) e se a aba publicada é a correta.";
         } else {
           status.classList.add("hidden");
-          // tenta processar os embeds do Instagram (espera o script carregar)
           processInstagrams();
         }
       },
