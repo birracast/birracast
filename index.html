@@ -1,90 +1,161 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Produtos Afiliados</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meus Achadinhos</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+    :root { --card: #fff; --bg:#f5f5f5; --border:#e5e5e5; --text:#111; --muted:#666; }
+    body { font-family: Arial, sans-serif; padding: 24px; background: var(--bg); color: var(--text); }
+    header { text-align:center; margin-bottom: 28px; }
+    header h1 { margin: 0 0 6px; font-size: 40px; }
+    header p { margin: 0; color: var(--muted); font-size: 18px; }
+    .status { text-align:center; margin: 18px 0; color: var(--muted); }
     .produto {
-      background: white;
+      background: var(--card);
       border-radius: 12px;
       padding: 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin: 0 auto 24px;
+      max-width: 840px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 10px rgba(0,0,0,.06);
     }
-    .produto h2 { margin-bottom: 15px; }
+    .produto h2 { margin: 0 0 14px; font-size: 22px; }
     .links {
-      margin-top: 15px;
+      margin-top: 14px;
       display: flex;
-      gap: 15px;
+      gap: 14px;
+      flex-wrap: wrap;
     }
     .links a {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 60px;
-      height: 60px;
+      width: 60px; height: 60px;
       border-radius: 50%;
-      background: white;
+      background: #fff;
       border: 2px solid #ddd;
       text-decoration: none;
       overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform .2s, box-shadow .2s;
     }
-    .links a:hover { 
-      transform: scale(1.1);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .links img {
-      width: 60%;
-      height: 60%;
-      object-fit: contain;
-    }
+    .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
+    .links img { width: 60%; height: 60%; object-fit: contain; }
+    .hidden { display:none; }
   </style>
 </head>
 <body>
-  <h1>Meus Produtos</h1>
+  <header>
+    <h1>Meus Achadinhos</h1>
+    <p>Produtos incríveis que você precisa conhecer!</p>
+  </header>
+
+  <div id="status" class="status">Carregando produtos…</div>
   <div id="produtos"></div>
 
   <!-- PapaParse para ler CSV -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <!-- Script do Instagram para embed -->
-  <script async src="//www.instagram.com/embed.js"></script>
+  <script async src="https://www.instagram.com/embed.js"></script>
+
   <script>
+    // ✅ Seu CSV publicado:
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv";
+
+    // Aceita variações de nomes de colunas
+    const COLS = {
+      produto: ["Produto","produto","Nome","Título","Titulo"],
+      instagram: ["VideoInstagram","Instagram","LinkInstagram","Video","PostInstagram"],
+      amazon: ["LinkAmazon","Amazon"],
+      ml: ["LinkMercadoLivr","LinkMercadoLivre","MercadoLivre","ML"],
+      shopee: ["LinkShopee","Shopee"]
+    };
+
+    const get = (row, keys) => {
+      for (const k of keys) {
+        // tolera espaços extras no cabeçalho
+        const foundKey = Object.keys(row).find(h => h.trim() === k);
+        if (foundKey && String(row[foundKey]).trim()) return String(row[foundKey]).trim();
+      }
+      return "";
+    };
+
+    const normalizeIg = (url) => {
+      if (!url) return "";
+      let u = url.trim();
+      // garante o formato permalink com barra final
+      if (!u.startsWith("http")) u = "https://" + u.replace(/^\/\//,"");
+      if (!u.endsWith("/")) u += "/";
+      return u;
+    };
+
+    function processInstagrams(retries = 12) {
+      if (window.instgrm && window.instgrm.Embeds && typeof window.instgrm.Embeds.process === "function") {
+        window.instgrm.Embeds.process();
+      } else if (retries > 0) {
+        setTimeout(() => processInstagrams(retries - 1), 500);
+      }
+    }
 
     Papa.parse(sheetUrl, {
       download: true,
       header: true,
-      complete: function(results) {
+      skipEmptyLines: "greedy",
+      complete: function (results) {
         const container = document.getElementById("produtos");
+        const status = document.getElementById("status");
 
-        results.data.forEach(item => {
-          if(item.Produto) {
-            const div = document.createElement("div");
-            div.classList.add("produto");
+        const rows = results.data
+          .map(r => {
+            // remove chaves com espaços no nome
+            const clean = {};
+            Object.keys(r).forEach(k => clean[k.trim()] = r[k]);
+            return clean;
+          })
+          .filter(r => Object.values(r).some(v => String(v).trim())); // ignora linha totalmente vazia
 
-            div.innerHTML = `
-              <h2>${item.Produto}</h2>
-              <blockquote class="instagram-media" data-instgrm-permalink="${item.VideoInstagram}" data-instgrm-version="14"></blockquote>
-              <div class="links">
-                <a href="${item.LinkAmazon}" target="_blank">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon">
-                </a>
-                <a href="${item.LinkMercadoLivr}" target="_blank">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercado_Livre_logo.svg" alt="Mercado Livre">
-                </a>
-                <a href="${item.LinkShopee}" target="_blank">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Shopee_logo.svg" alt="Shopee">
-                </a>
-              </div>
-            `;
+        let rendered = 0;
 
-            container.appendChild(div);
-          }
+        rows.forEach(item => {
+          const nome = get(item, COLS.produto);
+          if (!nome) return; // sem nome, não renderiza
+
+          const ig   = normalizeIg(get(item, COLS.instagram));
+          const az   = get(item, COLS.amazon);
+          const ml   = get(item, COLS.ml);
+          const sp   = get(item, COLS.shopee);
+
+          const card = document.createElement("div");
+          card.className = "produto";
+
+          // monta o bloco do Instagram somente se houver link
+          const igBlock = ig ? `<blockquote class="instagram-media" data-instgrm-permalink="${ig}" data-instgrm-version="14"></blockquote>` : "";
+
+          card.innerHTML = `
+            <h2>${nome}</h2>
+            ${igBlock}
+            <div class="links">
+              ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"></a>` : ""}
+              ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercado_Livre_logo.svg" alt="Mercado Livre"></a>` : ""}
+              ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Shopee_logo.svg" alt="Shopee"></a>` : ""}
+            </div>
+          `;
+
+          container.appendChild(card);
+          rendered++;
         });
 
-        window.instgrm.Embeds.process();
+        if (rendered === 0) {
+          status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha (Produto, VideoInstagram, LinkAmazon, LinkMercadoLivre/LinkMercadoLivr, LinkShopee) e se a aba publicada é a correta.";
+        } else {
+          status.classList.add("hidden");
+          // tenta processar os embeds do Instagram (espera o script carregar)
+          processInstagrams();
+        }
+      },
+      error: function(err) {
+        const status = document.getElementById("status");
+        status.textContent = "Erro ao carregar a planilha: " + (err && err.message ? err.message : "verifique o link do CSV publicado");
       }
     });
   </script>
