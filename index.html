@@ -2,118 +2,91 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meus Achadinhos</title>
+  <title>Produtos Afiliados</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-    h1 {
-      margin: 20px 0 5px;
-    }
-    p {
-      margin: 0 0 20px;
-      color: #555;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
     .produto {
       background: white;
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 20px;
       margin-bottom: 25px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    .produto h2 {
-      margin-bottom: 15px;
-    }
-    .video {
-      margin-bottom: 15px;
-    }
-    .botoes {
+    .produto h2 { margin-bottom: 15px; }
+    .links {
+      margin-top: 15px;
       display: flex;
-      justify-content: center;
       gap: 15px;
     }
-    .botoes a img {
-      width: 40px;
-      height: 40px;
-      transition: transform 0.2s;
+    .links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #ddd;
+      text-decoration: none;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    .botoes a img:hover {
+    .links a:hover { 
       transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .links img {
+      width: 60%;
+      height: 60%;
+      object-fit: contain;
     }
   </style>
 </head>
 <body>
-  <h1>Meus Achadinhos</h1>
-  <p>Produtos incríveis que você precisa conhecer!</p>
-  <div class="container" id="produtos"></div>
+  <h1>Meus Produtos</h1>
+  <div id="produtos"></div>
 
-  <!-- SDK do Instagram -->
-  <script async src="https://www.instagram.com/embed.js"></script>
-
+  <!-- PapaParse para ler CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <!-- Script do Instagram para embed -->
+  <script async src="//www.instagram.com/embed.js"></script>
   <script>
-    const sheetId = "18c3F25Gex42Kp0h2DwS1PoN5lh_liHw01iqmraKXPi4"; 
-    const sheetName = "Sheet1"; 
-    const apiKey = "AIzaSyAWUg2M_osNqogWBDcicCC-jmErngTzv0M"; 
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv";
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
-
-    async function loadProducts() {
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (!data.values || data.values.length <= 1) {
-          document.getElementById("produtos").innerHTML = "<p>Erro: Nenhum produto encontrado.</p>";
-          return;
-        }
-
-        const rows = data.values;
-        const headers = rows[0];
-        const products = rows.slice(1).map(row => {
-          let obj = {};
-          headers.forEach((h, i) => obj[h] = row[i]);
-          return obj;
-        });
-
+    Papa.parse(sheetUrl, {
+      download: true,
+      header: true,
+      complete: function(results) {
         const container = document.getElementById("produtos");
-        container.innerHTML = "";
 
-        products.forEach(product => {
-          container.innerHTML += createProductCard(product);
+        results.data.forEach(item => {
+          if(item.Produto) {
+            const div = document.createElement("div");
+            div.classList.add("produto");
+
+            div.innerHTML = `
+              <h2>${item.Produto}</h2>
+              <blockquote class="instagram-media" data-instgrm-permalink="${item.VideoInstagram}" data-instgrm-version="14"></blockquote>
+              <div class="links">
+                <a href="${item.LinkAmazon}" target="_blank">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon">
+                </a>
+                <a href="${item.LinkMercadoLivr}" target="_blank">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercado_Livre_logo.svg" alt="Mercado Livre">
+                </a>
+                <a href="${item.LinkShopee}" target="_blank">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Shopee_logo.svg" alt="Shopee">
+                </a>
+              </div>
+            `;
+
+            container.appendChild(div);
+          }
         });
 
-        // 🔥 Força o Instagram a processar os embeds
-        if (window.instgrm) {
-          window.instgrm.Embeds.process();
-        }
-      } catch (error) {
-        document.getElementById("produtos").innerHTML = "<p>Erro ao carregar os produtos.</p>";
-        console.error(error);
+        window.instgrm.Embeds.process();
       }
-    }
-
-    function createProductCard(product) {
-      const cleanUrl = product.VideoInstagram ? product.VideoInstagram.split("?")[0] : "";
-      const embedHtml = cleanUrl
-        ? `<blockquote class="instagram-media" data-instgrm-permalink="${cleanUrl}" data-instgrm-version="14"></blockquote>`
-        : "<p>Vídeo indisponível</p>";
-
-      const amazonLink = product.LinkAmazon ? `
-        <a href="${product.LinkAmazon}" target="_blank" title="Comprar na Amazon">
-          <img src="https://i.imgur.com/n4G0b35.png" alt="Amazon">
-        </a>` : '';
-
-      const mercadoLivreLink = product.LinkMercadoLivre ? `
-        <a href="${product.LinkMercadoLivre}" target="_blank" title="Comprar no Mercado Livre">
-          <img src=
-
+    });
+  </script>
+</body>
+</html>
