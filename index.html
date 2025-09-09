@@ -128,14 +128,14 @@
           const igBlock = ig ? `<blockquote class="instagram-media" data-instgrm-permalink="${ig}" data-instgrm-version="14"></blockquote>` : "";
 
           card.innerHTML = `
-            <h2>${nome}</h2>
-            ${igBlock}
-            <div class="links">
-              ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"></a>` : ""}
-              ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.21.3/mercadolibre/logo-pt__large_plus.png" alt="Mercado Livre"></a>` : ""}
-              ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/Shopee_logo.svg" alt="Shopee"></a>` : ""}
-            </div>
-          `;
+            <h2>${nome}</h2>
+            ${igBlock}
+            <div class="links">
+              ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="amazon_icon.png" alt="Amazon"></a>` : ""}
+              ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
+              ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
+            </div>
+          `;
 
           container.appendChild(card);
           rendered++;
@@ -156,4 +156,5 @@
   </script>
 </body>
 </html>
+
 
