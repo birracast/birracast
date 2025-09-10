@@ -1,57 +1,69 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BIRRA CAST Achadinhos</title>
+
+  <!-- Fonte Sour Gummy -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy&display=swap" rel="stylesheet">
+
   <style>
     :root { --card: #222; --bg:#000; --border:#444; --text:#f0f0f0; --muted:#999; }
-    body {
+
+    body {
       font-family: 'Sour Gummy', cursive;
       padding: 24px;
-      background: linear-gradient(to bottom, #111111, #333333); /* grafite escuro para cinza mais claro */
-      background-image: url("background.png");
-      background-position: center top;  /* centraliza horizontalmente e começa do topo */
-      background-size: cover;           /* cobre todo o conteúdo */
-      background-attachment: fixed;     /* fica fixa ao rolar a página */
-      background-repeat: no-repeat;     /* não repete */
       color: var(--text);
-      min-height: 100vh;                /* garante altura mínima de tela */
+      min-height: 100vh;
+
+      /* Fundo fixo com imagem + gradiente de reserva */
+      background: 
+        url("background.png") center top / cover no-repeat fixed, 
+        linear-gradient(to bottom, #111111, #333333);
     }
 
     header { text-align:center; margin-bottom: 28px; }
-    header h1 { margin: 0 0 6px; font-size: 40px; }
-    header p { margin: 0; color: var(--muted); font-size: 18px; }
-    .status { text-align:center; margin: 18px 0; color: var(--muted); }
-    .produto {
-  background: url("mesabirracast.png") center/cover no-repeat;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 0 auto 24px;
-  max-width: 840px;
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 10px rgba(0,0,0,.06);
-  color: white; /* deixa o texto branco */
-}
+    header h1 { margin: 0 0 6px; font-size: 40px; font-family: 'Sour Gummy', cursive; }
+    header p { margin: 0; color: var(--muted); font-size: 18px; font-family: 'Sour Gummy', cursive; }
+    .status { text-align:center; margin: 18px 0; color: var(--muted); font-family: 'Sour Gummy', cursive; }
 
-.produto h2 {
-  margin: 0 0 14px;
-  font-size: 22px;
-  text-align:center;
-  color: white; /* garante título branco */
-}
+    .produto {
+      background: url("mesabirracast.png") center/cover no-repeat;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 0 auto 24px;
+      max-width: 840px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 10px rgba(0,0,0,.06);
+      color: white;
+      font-family: 'Sour Gummy', cursive;
+    }
+
+    .produto h2 {
+      margin: 0 0 14px;
+      font-size: 22px;
+      text-align:center;
+      color: white;
+      font-family: 'Sour Gummy', cursive;
+    }
+
     .links {
       margin-top: 14px;
       display: flex;
       gap: 14px;
       flex-wrap: wrap;
       justify-content: center;
+      font-family: 'Sour Gummy', cursive;
     }
+
     .links a {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 64px;  /* tamanho do círculo */
+      width: 64px;
       height: 64px;
       border-radius: 50%;
       background: #fff;
@@ -59,14 +71,12 @@
       overflow: hidden;
       transition: transform .2s, box-shadow .2s;
     }
+
     .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
-    .links img { 
-      width: 70%; 
-      height: 70%; 
-      object-fit: contain; 
-    }
+    .links img { width: 70%; height: 70%; object-fit: contain; }
     .instagram-media { margin: 0 auto !important; max-width: 500px !important; }
     .hidden { display:none; }
+
     .top-banner {
       width: 100%;
       margin: 0;
@@ -79,10 +89,10 @@
       width: 100%;
       height: auto;
       display: block;
-      
     }
+
     .produto:first-of-type {
-      margin-top: -240px; /* ajusta esse valor até ficar bom */
+      margin-top: -240px;
       position: relative;
       z-index: 10;
     }
@@ -90,10 +100,10 @@
 </head>
 <body>
   <div class="top-banner">
-  <img src="poster3.PNG" alt="Poster Birra Cast">
+    <img src="poster3.PNG" alt="Poster Birra Cast">
   </div>
-  <header>
-  </header>
+
+  <header></header>
 
   <div id="status" class="status">Carregando produtos…</div>
   <div id="produtos"></div>
@@ -171,15 +181,15 @@
           const igBlock = ig ? `<blockquote class="instagram-media" data-instgrm-permalink="${ig}" data-instgrm-version="14"></blockquote>` : "";
 
           card.innerHTML = `
-            <h2>${nome}</h2>
-            ${igBlock}
-            <div class="links">
+            <h2>${nome}</h2>
+            ${igBlock}
+            <div class="links">
               <p style="width:100%; text-align:center; font-weight:bold; margin:10px 0;">Compre aqui:</p>
-              ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="amazon_icon.png" alt="Amazon"></a>` : ""}
-              ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
-              ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
-            </div>
-          `;
+              ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="amazon_icon.png" alt="Amazon"></a>` : ""}
+              ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
+              ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
+            </div>
+          `;
 
           container.appendChild(card);
           rendered++;
@@ -200,19 +210,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
