@@ -9,7 +9,8 @@
     body { 
       font-family: 'Poppins', sans-serif;  /* Fonte bonita */
       padding: 24px; 
-      background: url("hexagonos2.png") center/cover fixed no-repeat; 
+      background: url("hexagonos2.png") center/cover fixed no-repeat;
+      background-size: cover;
       color: var(--text);
     }
     header { text-align:center; margin-bottom: 28px; }
@@ -44,16 +45,20 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 90px; height: 90px;
+      width: 64px;  /* tamanho do círculo */
+      height: 64px;
       border-radius: 50%;
       background: #fff;
       border: 2px solid #ddd;
-      text-decoration: none;
       overflow: hidden;
       transition: transform .2s, box-shadow .2s;
     }
     .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
-    .links img { max-width: 70%; max-height: 70%; object-fit: contain; }
+    .links img { 
+      width: 70%; 
+      height: 70%; 
+      object-fit: contain; 
+    }
     .instagram-media { margin: 0 auto !important; max-width: 500px !important; }
     .hidden { display:none; }
     .top-banner {
@@ -66,6 +71,9 @@
       width: 100%;
       height: auto;
       display: block;
+    }
+    .produto:first-of-type {
+      margin-top: -60px; /* ajusta esse valor até ficar bom */
     }
   </style>
 </head>
@@ -183,6 +191,7 @@
   </script>
 </body>
 </html>
+
 
 
 
