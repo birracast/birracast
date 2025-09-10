@@ -91,11 +91,22 @@
       display: block;
     }
 
+    /* Ajuste responsivo do primeiro card */
     .produto:first-of-type {
-      margin-top: -180px;
       position: relative;
       z-index: 10;
     }
+
+    @media (min-width: 1024px) {
+      .produto:first-of-type { margin-top: -240px; }
+    }
+    @media (max-width: 1023px) {
+      .produto:first-of-type { margin-top: -100px; }
+    }
+    @media (max-width: 480px) {
+      .produto:first-of-type { margin-top: -60px; }
+    }
+
   </style>
 </head>
 <body>
@@ -210,4 +221,3 @@
   </script>
 </body>
 </html>
-
