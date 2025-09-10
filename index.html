@@ -6,20 +6,19 @@
   <title>BIRRA CAST Achadinhos</title>
   <style>
     :root { --card: #222; --bg:#000; --border:#444; --text:#f0f0f0; --muted:#999; }
-    body { 
-      font-family: 'Poppins', sans-serif;
-      padding: 24px; 
-      /* Cor de fundo reserva, caso a imagem falhe */
-      background-color: var(--bg); 
-      /* Imagem de fundo */
-      background-image: url("background.png");
-      /* Posição, tamanho, anexo e repetição da imagem */
-      background-position: center center;
-      background-size: cover;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      color: var(--text);
-    }
+    body {
+      font-family: 'Sour Gummy', cursive;
+      padding: 24px;
+      background: linear-gradient(to bottom, #111111, #333333); /* grafite escuro para cinza mais claro */
+      background-image: url("background.png");
+      background-position: center top;  /* centraliza horizontalmente e começa do topo */
+      background-size: cover;           /* cobre todo o conteúdo */
+      background-attachment: fixed;     /* fica fixa ao rolar a página */
+      background-repeat: no-repeat;     /* não repete */
+      color: var(--text);
+      min-height: 100vh;                /* garante altura mínima de tela */
+    }
+
     header { text-align:center; margin-bottom: 28px; }
     header h1 { margin: 0 0 6px; font-size: 40px; }
     header p { margin: 0; color: var(--muted); font-size: 18px; }
@@ -201,6 +200,7 @@
   </script>
 </body>
 </html>
+
 
 
 
