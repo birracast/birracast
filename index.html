@@ -19,7 +19,7 @@
     header p { margin: 0; color: var(--muted); font-size: 18px; }
     .status { text-align:center; margin: 18px 0; color: var(--muted); }
     .produto {
-      background: var(--card);
+      background: url("mesabirracast.png") center/cover no-repeat; /* NOVO FUNDO */
       border-radius: 12px;
       padding: 20px;
       margin: 0 auto 24px;
@@ -39,7 +39,7 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 60px; height: 60px;
+      width: 90px; height: 90px;
       border-radius: 50%;
       background: #fff;
       border: 2px solid #ddd;
@@ -51,9 +51,23 @@
     .links img { max-width: 70%; max-height: 70%; object-fit: contain; }
     .instagram-media { margin: 0 auto !important; max-width: 500px !important; }
     .hidden { display:none; }
+    .top-banner {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .top-banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <div class="top-banner">
+  <img src="poster2.png" alt="Poster Birra Cast">
+  </div>
   <header>
     <h1>BIRRA CAST Achadinhos</h1>
     <p>Produtos que nossos papais usam! Sim, se você comprar por aqui vamos receber alguns centavos, e birra neles!</p>
@@ -138,6 +152,7 @@
             <h2>${nome}</h2>
             ${igBlock}
             <div class="links">
+              <p style="width:100%; text-align:center; font-weight:bold; margin:10px 0;">Compre aqui:</p>
               ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="amazon_icon.png" alt="Amazon"></a>` : ""}
               ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
               ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
@@ -163,6 +178,7 @@
   </script>
 </body>
 </html>
+
 
 
 
