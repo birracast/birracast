@@ -18,8 +18,6 @@
       padding: 24px;
       color: var(--text);
       min-height: 100vh;
-
-      /* Fundo fixo com imagem + gradiente de reserva */
       background: 
         url("background.png") center top / cover no-repeat fixed, 
         linear-gradient(to bottom, #111111, #333333);
@@ -30,30 +28,39 @@
     header p { margin: 0; color: var(--muted); font-size: 18px; font-family: 'Sour Gummy', cursive; }
     .status { text-align:center; margin: 18px 0; color: var(--muted); font-family: 'Sour Gummy', cursive; }
 
+    /* --- CONTÊINER EM 2 COLUNAS --- */
+    #produtos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* sempre 2 colunas */
+      gap: 12px; /* espaço entre os cards */
+    }
+
+    /* --- CARD DO PRODUTO --- */
     .produto {
       background: url("mesabirracast.png") center/cover no-repeat;
       border-radius: 12px;
-      padding: 20px;
-      margin: 0 auto 24px;
-      max-width: 840px;
+      padding: 12px; /* padding menor para caber em telas pequenas */
+      margin: 0;
+      max-width: none; /* sem limite fixo */
       border: 1px solid var(--border);
       box-shadow: 0 4px 10px rgba(0,0,0,.06);
       color: white;
       font-family: 'Sour Gummy', cursive;
+      width: 100%;
     }
 
     .produto h2 {
-      margin: 0 0 14px;
-      font-size: 22px;
+      margin: 0 0 8px;
+      font-size: 18px; /* texto menor */
       text-align:center;
       color: white;
       font-family: 'Sour Gummy', cursive;
     }
 
     .links {
-      margin-top: 14px;
+      margin-top: 10px;
       display: flex;
-      gap: 14px;
+      gap: 10px;
       flex-wrap: wrap;
       justify-content: center;
       font-family: 'Sour Gummy', cursive;
@@ -63,8 +70,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 64px;
-      height: 64px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: #fff;
       border: 2px solid #ddd;
@@ -74,7 +81,12 @@
 
     .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
     .links img { width: 70%; height: 70%; object-fit: contain; }
-    .instagram-media { margin: 0 auto !important; max-width: 500px !important; }
+
+    .instagram-media {
+      margin: 0 auto !important;
+      max-width: 100% !important; /* embed ocupa largura do card */
+    }
+
     .hidden { display:none; }
 
     .top-banner {
