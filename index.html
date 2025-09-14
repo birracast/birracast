@@ -57,6 +57,13 @@
       font-family: 'Sour Gummy', cursive;
     }
 
+    .produto img.produto-img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
     .links {
       margin-top: 10px;
       display: flex;
@@ -81,11 +88,6 @@
 
     .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
     .links img { width: 70%; height: 70%; object-fit: contain; }
-
-    .instagram-media {
-      margin: 0 auto !important;
-      max-width: 100% !important; /* embed ocupa largura do card */
-    }
 
     .hidden { display:none; }
 
@@ -133,18 +135,16 @@
 
   <!-- PapaParse para ler CSV -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <!-- Script do Instagram para embed -->
-  <script async src="https://www.instagram.com/embed.js"></script>
 
   <script>
     const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv";
 
     const COLS = {
       produto: ["Produto","produto","Nome","Título","Titulo"],
-      instagram: ["VideoInstagram","Instagram","LinkInstagram","Video","PostInstagram"],
-      amazon: ["LinkAmazon","Amazon"],
-      ml: ["LinkMercadoLivr","LinkMercadoLivre","MercadoLivre","ML"],
-      shopee: ["LinkShopee","Shopee"]
+      imagem:  ["LinkDaImagem","Imagem","Foto","LinkImagem"],
+      amazon:  ["LinkAmazon","Amazon"],
+      ml:      ["LinkMercadoLivr","LinkMercadoLivre","MercadoLivre","ML"],
+      shopee:  ["LinkShopee","Shopee"]
     };
 
     const get = (row, keys) => {
@@ -154,22 +154,6 @@
       }
       return "";
     };
-
-    const normalizeIg = (url) => {
-      if (!url) return "";
-      let u = url.trim();
-      if (!u.startsWith("http")) u = "https://" + u.replace(/^\/\//,"");
-      if (!u.endsWith("/")) u += "/";
-      return u;
-    };
-
-    function processInstagrams(retries = 12) {
-      if (window.instgrm && window.instgrm.Embeds && typeof window.instgrm.Embeds.process === "function") {
-        window.instgrm.Embeds.process();
-      } else if (retries > 0) {
-        setTimeout(() => processInstagrams(retries - 1), 500);
-      }
-    }
 
     Papa.parse(sheetUrl, {
       download: true,
@@ -190,22 +174,22 @@
         let rendered = 0;
 
         rows.forEach(item => {
-          const nome = get(item, COLS.produto);
+          const nome  = get(item, COLS.produto);
           if (!nome) return;
 
-          const ig   = normalizeIg(get(item, COLS.instagram));
-          const az   = get(item, COLS.amazon);
-          const ml   = get(item, COLS.ml);
-          const sp   = get(item, COLS.shopee);
+          const img   = get(item, COLS.imagem);
+          const az    = get(item, COLS.amazon);
+          const ml    = get(item, COLS.ml);
+          const sp    = get(item, COLS.shopee);
 
           const card = document.createElement("div");
           card.className = "produto";
 
-          const igBlock = ig ? `<blockquote class="instagram-media" data-instgrm-permalink="${ig}" data-instgrm-version="14"></blockquote>` : "";
+          const imgBlock = img ? `<img src="${img}" alt="${nome}" class="produto-img">` : "";
 
           card.innerHTML = `
             <h2>${nome}</h2>
-            ${igBlock}
+            ${imgBlock}
             <div class="links">
               <p style="width:100%; text-align:center; font-weight:bold; margin:10px 0;">Compre aqui:</p>
               ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="amazon_icon.png" alt="Amazon"></a>` : ""}
@@ -219,10 +203,9 @@
         });
 
         if (rendered === 0) {
-          status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha (Produto, VideoInstagram, LinkAmazon, LinkMercadoLivre/LinkMercadoLivr, LinkShopee).";
+          status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha (Produto, LinkDaImagem, LinkAmazon, LinkMercadoLivre/LinkMercadoLivr, LinkShopee).";
         } else {
           status.classList.add("hidden");
-          processInstagrams();
         }
       },
       error: function(err) {
