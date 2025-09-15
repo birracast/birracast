@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy&display=swap" rel="stylesheet">
 
   <style>
-    :root { --card: #222; --bg:#000; --border:#444; --text:#f0f0f0; --muted:#999; }
+    :root { --bg:#000; --text:#f0f0f0; --muted:#999; }
 
     body {
       font-family: 'Sour Gummy', cursive;
@@ -28,31 +28,40 @@
     header p { margin: 0; color: var(--muted); font-size: 18px; font-family: 'Sour Gummy', cursive; }
     .status { text-align:center; margin: 18px 0; color: var(--muted); font-family: 'Sour Gummy', cursive; }
 
-    /* --- CONTÊINER EM 2 COLUNAS --- */
+    /* --- CONTÊINER GRID --- */
     #produtos {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* sempre 2 colunas */
-      gap: 12px; /* espaço entre os cards */
+      /* padrão: 2 colunas no celular */
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* para telas maiores: mais colunas automaticamente */
+    @media (min-width: 600px) {
+      #produtos {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
     }
 
     /* --- CARD DO PRODUTO --- */
     .produto {
-      background: url("mesabirracast.png") center/cover no-repeat;
+      background: #fff; /* fundo branco */
+      border: 4px solid orange; /* borda grossa laranja */
       border-radius: 12px;
       padding: 12px;
       margin: 0;
-      border: 1px solid var(--border);
       box-shadow: 0 4px 10px rgba(0,0,0,.06);
-      color: white;
+      color: #000; /* texto preto */
       font-family: 'Sour Gummy', cursive;
       width: 100%;
       text-align: center;
     }
 
+    /* título dentro do card */
     .produto h2 {
       margin: 0 0 8px;
       font-size: 18px;
-      color: white;
+      color: #000;
       font-family: 'Sour Gummy', cursive;
     }
 
@@ -74,12 +83,13 @@
       font-family: 'Sour Gummy', cursive;
     }
 
+    /* botões maiores */
     .links a {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 48px;
-      height: 48px;
+      width: 64px;   /* antes 48px */
+      height: 64px;  /* antes 48px */
       border-radius: 50%;
       background: #fff;
       border: 2px solid #ddd;
@@ -88,7 +98,13 @@
     }
 
     .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
-    .links img { width: 70%; height: 70%; object-fit: contain; }
+
+    /* logos maiores */
+    .links img {
+      width: 80%;   /* antes 70% */
+      height: 80%;  /* antes 70% */
+      object-fit: contain;
+    }
 
     .hidden { display:none; }
 
