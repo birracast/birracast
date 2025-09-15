@@ -39,29 +39,30 @@
     .produto {
       background: url("mesabirracast.png") center/cover no-repeat;
       border-radius: 12px;
-      padding: 12px; /* padding menor para caber em telas pequenas */
+      padding: 12px;
       margin: 0;
-      max-width: none; /* sem limite fixo */
       border: 1px solid var(--border);
       box-shadow: 0 4px 10px rgba(0,0,0,.06);
       color: white;
       font-family: 'Sour Gummy', cursive;
       width: 100%;
+      text-align: center;
     }
 
     .produto h2 {
       margin: 0 0 8px;
-      font-size: 18px; /* texto menor */
-      text-align:center;
+      font-size: 18px;
       color: white;
       font-family: 'Sour Gummy', cursive;
     }
 
+    /* imagem do produto pequena e centralizada */
     .produto img.produto-img {
-      width: 100%;
-      border-radius: 8px;
-      margin-bottom: 10px;
+      max-width: 160px;
+      max-height: 160px;
       display: block;
+      margin: 0 auto 10px;
+      object-fit: contain;
     }
 
     .links {
