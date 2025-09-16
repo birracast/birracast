@@ -3,228 +3,135 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BIRRA CAST Achadinhos</title>
-
-  <!-- Fonte Sour Gummy -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy&display=swap" rel="stylesheet">
-
+  <title>Produtos</title>
   <style>
-    :root {
-      --card: #222;
-      --bg:#000;
-      --border:#444;
-      --text:#f0f0f0;
-      --muted:#999;
-    }
-
     body {
-      font-family: 'Sour Gummy', cursive;
-      padding: 24px;
-      color: var(--text);
-      min-height: 100vh;
-      background: url("background.png") center top / cover no-repeat fixed, linear-gradient(to bottom, #111111, #333333);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f9f9f9;
     }
 
-    .status {
-      text-align:center;
-      margin: 18px 0;
-      color: var(--muted);
-      font-family: 'Sour Gummy', cursive;
-    }
-
-    /* --- CONTÊINER EM 2 COLUNAS --- */
-    #produtos {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px; /* espaço entre os cards */
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
     }
 
-    /* --- CARD DO PRODUTO --- */
-    .produto {
-      background: url("mesabirracast.png") center/cover no-repeat;
+    .card {
+      background: #fff;
       border-radius: 12px;
+      border: 2px solid orange;
       padding: 16px;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 10px rgba(0,0,0,.06);
-      color: white;
-      font-family: 'Sour Gummy', cursive;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 380px; /* altura fixa */
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s ease-in-out;
     }
 
-    .produto h2 {
-      margin: 0 0 8px;
-      font-size: 18px;
-      text-align:center;
-      color: white;
-      font-family: 'Sour Gummy', cursive;
+    .card:hover {
+      transform: scale(1.03);
+    }
 
-      /* truncar texto */
-      display: -webkit-box;
-      -webkit-line-clamp: 2; /* número máximo de linhas */
-      -webkit-box-orient: vertical;
+    .card img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 8px;
+      background-color: #fff;
+      display: block;
+      margin: 0 auto 12px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 10px 0;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-height: 44px;
-      cursor: help; /* mostra que tem tooltip */
     }
 
-    .produto img.produto-img {
-      width: 120px;
-      height: auto;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      display: block;
+    .card-title:hover {
+      cursor: pointer;
     }
 
-    .links {
-      margin-top: 10px;
+    .icons {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
       justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
     }
 
-    .links a {
-      display: inline-flex;
+    .icons a {
+      width: 40px;
+      height: 40px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      width: 48px;
-      height: 48px;
       border-radius: 50%;
-      background: #fff;
-      border: 2px solid #ddd;
-      overflow: hidden;
-      transition: transform .2s, box-shadow .2s;
+      background: #eee;
+      transition: background 0.2s;
     }
 
-    .links a:hover {
-      transform: scale(1.07);
-      box-shadow: 0 6px 14px rgba(0,0,0,.18);
+    .icons a:hover {
+      background: #ddd;
     }
 
-    .links img {
-      width: 70%;
-      height: 70%;
+    .icons img {
+      width: 22px;
+      height: 22px;
       object-fit: contain;
-    }
-
-    .nota {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 8px;
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    .hidden { display:none; }
-
-    .top-banner {
-      width: 100%;
-      margin: 0 auto 40px auto; /* espaço abaixo do banner */
-      text-align: center;
-    }
-
-    .top-banner img {
-      max-width: 1000px;
-      width: 100%;
-      height: auto;
-      display: inline-block;
     }
   </style>
 </head>
 <body>
-  <div class="top-banner">
-    <img src="poster3.PNG" alt="Poster Birra Cast">
-  </div>
+  <h1>Produtos</h1>
+  <div class="grid" id="produtos"></div>
 
-  <div id="status" class="status">Carregando produtos…</div>
-  <div id="produtos"></div>
-
-  <!-- PapaParse para ler CSV -->
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
-    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv";
+    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-XXX/pub?output=csv"; // link publicado da sua planilha
 
-    const COLS = {
-      produto: ["Produto","produto","Nome","Título","Titulo"],
-      imagem: ["LinkDaImagem","Imagem","Foto","LinkImagem"],
-      amazon: ["LinkAmazon","Amazon"],
-      ml: ["LinkMercadoLivr","LinkMercadoLivre","MercadoLivre","ML"],
-      shopee: ["LinkShopee","Shopee"]
-    };
+    async function carregarProdutos() {
+      const response = await fetch(sheetURL);
+      const data = await response.text();
+      const linhas = data.split("\n").map(l => l.split(","));
 
-    const get = (row, keys) => {
-      for (const k of keys) {
-        const foundKey = Object.keys(row).find(h => h.trim() === k);
-        if (foundKey && String(row[foundKey]).trim()) return String(row[foundKey]).trim();
+      const cabecalho = linhas[0];
+      const idxNome = cabecalho.indexOf("Nome");
+      const idxImagem = cabecalho.indexOf("ImagemProduto");
+      const idxAmazon = cabecalho.indexOf("LinkAmazon");
+      const idxShopee = cabecalho.indexOf("LinkShopee");
+      const idxML = cabecalho.indexOf("LinkML");
+
+      const container = document.getElementById("produtos");
+
+      for (let i = 1; i < linhas.length; i++) {
+        const linha = linhas[i];
+        if (!linha[idxNome]) continue;
+
+        const nome = linha[idxNome];
+        const imagem = linha[idxImagem];
+        const amazon = linha[idxAmazon];
+        const shopee = linha[idxShopee];
+        const ml = linha[idxML];
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <img src="${imagem}" alt="${nome}">
+          <div class="card-title" title="${nome}">${nome}</div>
+          <div class="icons">
+            ${amazon ? `<a href="${amazon}" target="_blank"><img src="amazon_icon.jpg" alt="Amazon"></a>` : ""}
+            ${ml ? `<a href="${ml}" target="_blank"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
+            ${shopee ? `<a href="${shopee}" target="_blank"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
+          </div>
+        `;
+        container.appendChild(card);
       }
-      return "";
-    };
+    }
 
-    Papa.parse(sheetUrl, {
-      download: true,
-      header: true,
-      skipEmptyLines: "greedy",
-      complete: function (results) {
-        const container = document.getElementById("produtos");
-        const status = document.getElementById("status");
-
-        const rows = results.data
-          .map(r => {
-            const clean = {};
-            Object.keys(r).forEach(k => clean[k.trim()] = r[k]);
-            return clean;
-          })
-          .filter(r => Object.values(r).some(v => String(v).trim()));
-
-        let rendered = 0;
-        rows.forEach(item => {
-          const nome = get(item, COLS.produto);
-          if (!nome) return;
-          const img = get(item, COLS.imagem);
-          const az = get(item, COLS.amazon);
-          const ml = get(item, COLS.ml);
-          const sp = get(item, COLS.shopee);
-
-          const card = document.createElement("div");
-          card.className = "produto";
-
-          const imgBlock = img ? `<img src="${img}" alt="${nome}" class="produto-img">` : "";
-
-          card.innerHTML = `
-            <h2 title="${nome}">${nome}</h2>
-            ${imgBlock}
-            <div class="links">
-              <p style="width:100%; text-align:center; font-weight:bold; margin:10px 0;">Compre aqui:</p>
-              ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="amazon_icon.png" alt="Amazon"></a>` : ""}
-              ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
-              ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
-            </div>
-            <p class="nota">Foto meramente ilustrativa, pode haver variações do produto dentro dos sites dos links, confira antes de concluir a compra</p>
-          `;
-
-          container.appendChild(card);
-          rendered++;
-        });
-
-        if (rendered === 0) {
-          status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha (Produto, LinkDaImagem, LinkAmazon, LinkMercadoLivre/LinkMercadoLivr, LinkShopee).";
-        } else {
-          status.classList.add("hidden");
-        }
-      },
-      error: function(err) {
-        const status = document.getElementById("status");
-        status.textContent = "Erro ao carregar a planilha: " + (err && err.message ? err.message : "verifique o link do CSV publicado");
-      }
-    });
+    carregarProdutos();
   </script>
 </body>
 </html>
-
