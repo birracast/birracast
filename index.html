@@ -3,135 +3,233 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Produtos</title>
+  <title>BIRRA CAST Achadinhos</title>
+
+  <!-- Fonte Sour Gummy -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy&display=swap" rel="stylesheet">
+
   <style>
+    :root { --bg:#000; --text:#f0f0f0; --muted:#999; }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f9f9f9;
+      font-family: 'Sour Gummy', cursive;
+      padding: 24px;
+      color: var(--text);
+      min-height: 100vh;
+      background: 
+        url("background.png") center top / cover no-repeat fixed, 
+        linear-gradient(to bottom, #111111, #333333);
     }
 
-    .grid {
+    header { text-align:center; margin-bottom: 28px; }
+    header h1 { margin: 0 0 6px; font-size: 40px; font-family: 'Sour Gummy', cursive; }
+    header p { margin: 0; color: var(--muted); font-size: 18px; font-family: 'Sour Gummy', cursive; }
+    .status { text-align:center; margin: 18px 0; color: var(--muted); font-family: 'Sour Gummy', cursive; }
+
+    /* --- CONTÊINER GRID --- */
+    #produtos {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      /* padrão: 2 colunas no celular */
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
-    .card {
-      background: #fff;
-      border-radius: 12px;
-      border: 2px solid orange;
-      padding: 16px;
-      text-align: center;
-      position: relative;
-      transition: transform 0.2s ease-in-out;
-    }
-
-    .card:hover {
-      transform: scale(1.03);
-    }
-
-    .card img {
-      width: 120px;
-      height: 120px;
-      object-fit: contain;
-      border-radius: 8px;
-      background-color: #fff;
-      display: block;
-      margin: 0 auto 12px;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin: 10px 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-title:hover {
-      cursor: pointer;
-    }
-
-    .icons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .icons a {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: #eee;
-      transition: background 0.2s;
-    }
-
-    .icons a:hover {
-      background: #ddd;
-    }
-
-    .icons img {
-      width: 22px;
-      height: 22px;
-      object-fit: contain;
-    }
-  </style>
-</head>
-<body>
-  <h1>Produtos</h1>
-  <div class="grid" id="produtos"></div>
-
-  <script>
-    const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-XXX/pub?output=csv"; // link publicado da sua planilha
-
-    async function carregarProdutos() {
-      const response = await fetch(sheetURL);
-      const data = await response.text();
-      const linhas = data.split("\n").map(l => l.split(","));
-
-      const cabecalho = linhas[0];
-      const idxNome = cabecalho.indexOf("Nome");
-      const idxImagem = cabecalho.indexOf("ImagemProduto");
-      const idxAmazon = cabecalho.indexOf("LinkAmazon");
-      const idxShopee = cabecalho.indexOf("LinkShopee");
-      const idxML = cabecalho.indexOf("LinkML");
-
-      const container = document.getElementById("produtos");
-
-      for (let i = 1; i < linhas.length; i++) {
-        const linha = linhas[i];
-        if (!linha[idxNome]) continue;
-
-        const nome = linha[idxNome];
-        const imagem = linha[idxImagem];
-        const amazon = linha[idxAmazon];
-        const shopee = linha[idxShopee];
-        const ml = linha[idxML];
-
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-          <img src="${imagem}" alt="${nome}">
-          <div class="card-title" title="${nome}">${nome}</div>
-          <div class="icons">
-            ${amazon ? `<a href="${amazon}" target="_blank"><img src="amazon_icon.jpg" alt="Amazon"></a>` : ""}
-            ${ml ? `<a href="${ml}" target="_blank"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
-            ${shopee ? `<a href="${shopee}" target="_blank"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
-          </div>
-        `;
-        container.appendChild(card);
+    /* para telas maiores: mais colunas automaticamente */
+    @media (min-width: 600px) {
+      #produtos {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       }
     }
 
-    carregarProdutos();
+    /* --- CARD DO PRODUTO --- */
+    .produto {
+      background: #fff; /* fundo branco */
+      border: 4px solid orange; /* borda grossa laranja */
+      border-radius: 12px;
+      padding: 12px;
+      margin: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,.06);
+      color: #000; /* texto preto */
+      font-family: 'Sour Gummy', cursive;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* título dentro do card */
+    .produto h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #000;
+      font-family: 'Sour Gummy', cursive;
+    }
+
+    /* imagem do produto pequena e centralizada */
+    .produto img.produto-img {
+      max-width: 160px;
+      max-height: 160px;
+      display: block;
+      margin: 0 auto 10px;
+      object-fit: contain;
+    }
+
+    .links {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      font-family: 'Sour Gummy', cursive;
+    }
+
+    /* botões maiores */
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;   /* antes 48px */
+      height: 64px;  /* antes 48px */
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #ddd;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .links a:hover { transform: scale(1.07); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
+
+    /* logos maiores */
+    .links img {
+      width: 80%;   /* antes 70% */
+      height: 80%;  /* antes 70% */
+      object-fit: contain;
+    }
+
+    .hidden { display:none; }
+
+    .top-banner {
+      width: 60%;
+      margin: 50;
+      padding: 50;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-banner img {
+      width: 60%;
+      height: auto;
+      display: block;
+    }
+
+    /* Ajuste responsivo do primeiro card */
+    .produto:first-of-type {
+      position: relative;
+      z-index: 10;
+    }
+
+    @media (min-width: 1024px) {
+      .produto:first-of-type { margin-top: -240px; }
+    }
+    @media (max-width: 1023px) {
+      .produto:first-of-type { margin-top: -100px; }
+    }
+    @media (max-width: 480px) {
+      .produto:first-of-type { margin-top: -60px; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="top-banner">
+    <img src="poster3.PNG" alt="Poster Birra Cast">
+  </div>
+
+  <header></header>
+
+  <div id="status" class="status">Carregando produtos…</div>
+  <div id="produtos"></div>
+
+  <!-- PapaParse para ler CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <script>
+    const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQQQe0VCTsh6KYIJ54EjpnqppZaTxZhmZ0d9kWf31SkSkO6RQxYcVg7TOx6GNB2PyGDP581EmW6ogph/pub?gid=0&single=true&output=csv";
+
+    const COLS = {
+      produto: ["Produto","produto","Nome","Título","Titulo"],
+      imagem:  ["LinkDaImagem","Imagem","Foto","LinkImagem"],
+      amazon:  ["LinkAmazon","Amazon"],
+      ml:      ["LinkMercadoLivr","LinkMercadoLivre","MercadoLivre","ML"],
+      shopee:  ["LinkShopee","Shopee"]
+    };
+
+    const get = (row, keys) => {
+      for (const k of keys) {
+        const foundKey = Object.keys(row).find(h => h.trim() === k);
+        if (foundKey && String(row[foundKey]).trim()) return String(row[foundKey]).trim();
+      }
+      return "";
+    };
+
+    Papa.parse(sheetUrl, {
+      download: true,
+      header: true,
+      skipEmptyLines: "greedy",
+      complete: function (results) {
+        const container = document.getElementById("produtos");
+        const status = document.getElementById("status");
+
+        const rows = results.data
+          .map(r => {
+            const clean = {};
+            Object.keys(r).forEach(k => clean[k.trim()] = r[k]);
+            return clean;
+          })
+          .filter(r => Object.values(r).some(v => String(v).trim()));
+
+        let rendered = 0;
+
+        rows.forEach(item => {
+          const nome  = get(item, COLS.produto);
+          if (!nome) return;
+
+          const img   = get(item, COLS.imagem);
+          const az    = get(item, COLS.amazon);
+          const ml    = get(item, COLS.ml);
+          const sp    = get(item, COLS.shopee);
+
+          const card = document.createElement("div");
+          card.className = "produto";
+
+          const imgBlock = img ? `<img src="${img}" alt="${nome}" class="produto-img">` : "";
+
+          card.innerHTML = `
+            <h2>${nome}</h2>
+            ${imgBlock}
+            <div class="links">
+              <p style="width:100%; text-align:center; font-weight:bold; margin:10px 0;">Compre aqui:</p>
+              ${az ? `<a href="${az}" target="_blank" rel="noopener"><img src="amazon_icon.jpg" alt="Amazon"></a>` : ""}
+              ${ml ? `<a href="${ml}" target="_blank" rel="noopener"><img src="mercadolivre_icon.png" alt="Mercado Livre"></a>` : ""}
+              ${sp ? `<a href="${sp}" target="_blank" rel="noopener"><img src="shopee_icon.png" alt="Shopee"></a>` : ""}
+            </div>
+          `;
+
+          container.appendChild(card);
+          rendered++;
+        });
+
+        if (rendered === 0) {
+          status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha (Produto, LinkDaImagem, LinkAmazon, LinkMercadoLivre/LinkMercadoLivr, LinkShopee).";
+        } else {
+          status.classList.add("hidden");
+        }
+      },
+      error: function(err) {
+        const status = document.getElementById("status");
+        status.textContent = "Erro ao carregar a planilha: " + (err && err.message ? err.message : "verifique o link do CSV publicado");
+      }
+    });
   </script>
 </body>
 </html>
