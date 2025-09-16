@@ -26,6 +26,20 @@
     header { text-align:center; margin-bottom: 28px; }
     .status { text-align:center; margin: 18px 0; color: var(--muted); }
 
+    /* Caixa de pesquisa */
+    #search-box {
+      display: block;
+      margin: 0 auto 20px auto;
+      padding: 10px 14px;
+      font-size: 16px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 2px solid orange;
+      text-align: center;
+      outline: none;
+    }
+
     /* --- CONTÊINER GRID --- */
     #produtos {
       display: grid;
@@ -53,26 +67,22 @@
       font-family: 'Sour Gummy', cursive;
       width: 100%;
       text-align: center;
-
-      /* para altura uniforme */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    /* título dentro do card */
     .produto h2 {
       margin: 0 0 8px;
       font-size: 18px;
       color: #000;
-      min-height: 48px; /* padroniza altura do título */
+      min-height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
     }
 
-    /* imagem do produto */
     .produto img.produto-img {
       max-width: 160px;
       max-height: 160px;
@@ -131,10 +141,12 @@
 
   <header></header>
 
+  <!-- Caixa de pesquisa -->
+  <input type="text" id="search-box" placeholder="Pesquisar produtos..." />
+
   <div id="status" class="status">Carregando produtos…</div>
   <div id="produtos"></div>
 
-  <!-- PapaParse para ler CSV -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <script>
@@ -155,6 +167,8 @@
       }
       return "";
     };
+
+    let allCards = [];
 
     Papa.parse(sheetUrl, {
       download: true,
@@ -200,11 +214,12 @@
           `;
 
           container.appendChild(card);
+          allCards.push({element: card, name: nome.toLowerCase()});
           rendered++;
         });
 
         if (rendered === 0) {
-          status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha (Produto, LinkDaImagem, LinkAmazon, LinkMercadoLivre/LinkMercadoLivr, LinkShopee).";
+          status.textContent = "Nenhum produto encontrado. Verifique os nomes das colunas da planilha.";
         } else {
           status.classList.add("hidden");
         }
@@ -213,6 +228,19 @@
         const status = document.getElementById("status");
         status.textContent = "Erro ao carregar a planilha: " + (err && err.message ? err.message : "verifique o link do CSV publicado");
       }
+    });
+
+    // Função de filtro em tempo real
+    const searchBox = document.getElementById("search-box");
+    searchBox.addEventListener("input", function() {
+      const query = this.value.toLowerCase();
+      allCards.forEach(c => {
+        if (c.name.includes(query)) {
+          c.element.style.display = "flex";
+        } else {
+          c.element.style.display = "none";
+        }
+      });
     });
   </script>
 </body>
